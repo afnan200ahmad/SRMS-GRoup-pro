@@ -1,0 +1,36 @@
+package repo;
+
+import model.Student;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class StudentRepository {
+    private final List<Student> students = new ArrayList<>();
+
+    public List<Student> getAll() { return students; }
+
+    public void add(Student s) {
+        if (findById(s.getId()) != null) throw new IllegalArgumentException("Student ID already exists");
+        students.add(s);
+    }
+
+    public Student findById(String id) {
+        for (Student s : students) {
+            if (s.getId().equalsIgnoreCase(id)) return s;
+        }
+        return null;
+    }
+
+    public boolean removeById(String id) {
+        Student s = findById(id);
+        if (s == null) return false;
+        return students.remove(s);
+    }
+
+    public List<Student> topByGpa(int n) {
+        List<Student> copy = new ArrayList<>(students);
+        copy.sort(Comparator.comparingDouble(Student::getGpa).reversed());
+        return copy.subList(0, Math.min(n, copy.size()));
+    }
+}
